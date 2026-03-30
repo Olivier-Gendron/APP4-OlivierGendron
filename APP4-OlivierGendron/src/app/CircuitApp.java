@@ -1,6 +1,9 @@
 package app;
 
-import electronique.Composant;
+import electronique.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CircuitApp {
 

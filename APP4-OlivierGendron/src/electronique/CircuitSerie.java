@@ -13,7 +13,8 @@ public class CircuitSerie extends Circuit {
     public double calculerResistance() {
         double resistanceEquivalente = 0;
         for (Composant c : composants) {
-            c.calculerResistance();
+           resistanceEquivalente += c.calculerResistance();
+
         }
         return resistanceEquivalente;
     }
