@@ -22,21 +22,16 @@ public class CircuitApp {
     }
 
     public static void main(String[] args) {
-        String reponse;
-        Scanner sc = new Scanner(System.in);
         do {
             afficherFichiers(creationListeFichiers());
-           String chemin = construireChemin(demanderNumero());
-           CircuitBuilder circuitBuilder = new CircuitBuilder();
-          double valeurResistance = circuitBuilder.construireCircuit(chemin).calculerResistance();
+            String chemin = construireChemin(demanderNumero());
+            CircuitBuilder circuitBuilder = new CircuitBuilder();
+            double valeurResistance = circuitBuilder.construireCircuit(chemin).calculerResistance();
             System.out.println("Résistance équivalente calculée : " + valeurResistance + "Ω");
 
 
-
-
-        }
-
-
+        }while(boucleUtilisation() == 'R');
+        System.out.println("---Le programme a bien été arrêté---");
 
     }
 
@@ -65,8 +60,8 @@ public class CircuitApp {
     }
 
     private static int demanderNumero() {
-        int numeroFichier = -1;
         Scanner sc = new Scanner(System.in);
+        int numeroFichier = -1;
         System.out.print("Entrez le numéro correspondant au dossier que vous voulez utiliser: ");
         try {
             numeroFichier = sc.nextInt();
@@ -83,9 +78,29 @@ public class CircuitApp {
 
     }
 
-    private static String construireChemin(int numero){
+    private static String construireChemin(int numero) {
         return pathIn + fSep + fichiersDisponibles[numero];
     }
+}
+
+private static char boucleUtilisation(){
+    Scanner sc = new Scanner(System.in);
+    char reponse = 0;
+    System.out.println("[R] Tester un autre fichier\n[Q] Quitter");
+    try{
+        System.out.print("Entrez la lettre correspondant à l'option que vous désirez:");
+        reponse = sc.nextLine().charAt(0);
+    } catch (InputMismatchException e) {
+        System.out.println("ERREUR: Veuillez entrer un caractère valide.");
+        boucleUtilisation();
+    }
+    reponse = Character.toUpperCase(reponse);
+    if (reponse != 'R' || reponse != 'Q'){
+        System.out.println("ERREUR: Veuillez entrer un caractère valide.");
+        boucleUtilisation();
+    }
+return reponse;
+
 }
 
 
