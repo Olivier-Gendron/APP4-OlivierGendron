@@ -26,11 +26,19 @@ public class CircuitApp {
             afficherFichiers(creationListeFichiers());
             String chemin = construireChemin(demanderNumero());
             CircuitBuilder circuitBuilder = new CircuitBuilder();
-            double valeurResistance = circuitBuilder.construireCircuit(chemin).calculerResistance();
+            Composant c = circuitBuilder.construireCircuit(chemin);
+            if (c == null) {
+                System.out.println("ERREUR: Impossible de construire le circuit à partir du fichier.");
+            } else {
+                double valeurResistance = c.calculerResistance();
+                System.out.println("Résistance équivalente calculée : " + valeurResistance + "Ω");
+            }
+
+            double valeurResistance = c.calculerResistance();
             System.out.println("Résistance équivalente calculée : " + valeurResistance + "Ω");
 
 
-        }while(boucleUtilisation() == 'R');
+        } while (boucleUtilisation() == 'R');
         System.out.println("---Le programme a bien été arrêté---");
 
     }
@@ -40,12 +48,15 @@ public class CircuitApp {
         File dossier = new File(pathIn);
         if (!dossier.exists()) {
             System.out.println("Erreur: Le chemin n'existe pas.");
+            return null;
         } else if (!dossier.isDirectory()) {
             System.out.println("Le chemin n'est pas un dossier.");
+            return null;
         }
         fichiersDisponibles = dossier.list();
         if (fichiersDisponibles == null) {
             System.out.println("Le dossier est vide.");
+            return null;
         }
 
         return fichiersDisponibles;
@@ -53,9 +64,14 @@ public class CircuitApp {
 
     private static void afficherFichiers(String[] fichiersDisponibles) {
         System.out.println("---Liste des fichiers disponibles---");
-        for (int i = 0; i <= fichiersDisponibles.length - 1; i++) {
-            System.out.println("[" + i + "] " + fichiersDisponibles[i]);
+        if (fichiersDisponibles == null || fichiersDisponibles.length == 0) {
+            System.out.println("Aucun fichier disponible");
+        } else {
+            for (int i = 0; i <= fichiersDisponibles.length - 1; i++) {
+                System.out.println("[" + i + "] " + fichiersDisponibles[i]);
+            }
         }
+
         System.out.println("-----------------------------------");
     }
 
@@ -71,7 +87,7 @@ public class CircuitApp {
         }
         if (numeroFichier >= fichiersDisponibles.length || numeroFichier < 0) {
             System.out.println("ERREUR: Veuillez entrer une valeur entre 0 et " + (fichiersDisponibles.length - 1));
-            demanderNumero();
+            return demanderNumero();
         }
         return numeroFichier;
 
@@ -81,26 +97,30 @@ public class CircuitApp {
     private static String construireChemin(int numero) {
         return pathIn + fSep + fichiersDisponibles[numero];
     }
+
+    private static char boucleUtilisation() {
+        Scanner sc = new Scanner(System.in);
+        char reponse = 0;
+        System.out.println("[R] Tester un autre fichier\n[Q] Quitter");
+        try {
+            System.out.print("Entrez la lettre correspondant à l'option que vous désirez:");
+            reponse = sc.nextLine().charAt(0);
+        } catch (InputMismatchException e) {
+            System.out.println("ERREUR: Veuillez entrer un caractère valide.");
+           return boucleUtilisation();
+        }
+        reponse = Character.toUpperCase(reponse);
+        if (reponse != 'R' && reponse != 'Q') {
+            System.out.println("ERREUR: Veuillez entrer un caractère valide.");
+            return boucleUtilisation();
+        }
+        return reponse;
+
+    }
 }
 
-private static char boucleUtilisation(){
-    Scanner sc = new Scanner(System.in);
-    char reponse = 0;
-    System.out.println("[R] Tester un autre fichier\n[Q] Quitter");
-    try{
-        System.out.print("Entrez la lettre correspondant à l'option que vous désirez:");
-        reponse = sc.nextLine().charAt(0);
-    } catch (InputMismatchException e) {
-        System.out.println("ERREUR: Veuillez entrer un caractère valide.");
-        boucleUtilisation();
-    }
-    reponse = Character.toUpperCase(reponse);
-    if (reponse != 'R' || reponse != 'Q'){
-        System.out.println("ERREUR: Veuillez entrer un caractère valide.");
-        boucleUtilisation();
-    }
-return reponse;
 
-}
+
+
 
 

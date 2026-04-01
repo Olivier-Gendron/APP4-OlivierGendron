@@ -24,7 +24,7 @@ public class CircuitBuilder {
         ObjectMapper mapper = new ObjectMapper();
         try {
             JsonNode donneesCircuit = mapper.readTree(new File(cheminFichier));
-            return lireComposant(donneesCircuit);
+            return lireComposant(donneesCircuit.get("Circuit"));
 
         } catch (IOException e) {
             System.err.println("Erreur de lecture : " + e.getMessage());
@@ -36,7 +36,7 @@ public class CircuitBuilder {
     private Composant lireComposant(JsonNode node) {
         String type = node.get("type").asText();
         if ("resistance".equals(type)) {
-            return new Resistance(node.get("valeur").asInt());
+            return new Resistance(node.get("valeur").asDouble());
         } else if ("serie".equals(type)) {
             List<Composant> composants = new ArrayList<>();
             for (JsonNode composantNode : node.get("composants")) {
