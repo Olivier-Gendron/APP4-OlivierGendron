@@ -30,7 +30,7 @@ public class CircuitApp {
             try {
                 Composant c = circuitBuilder.construireCircuit(chemin);
                 valeurResistance = c.calculerResistance();
-                System.out.println("\nRésistance équivalente calculée : " + valeurResistance + "Ω");
+                System.out.println("\nRésistance équivalente calculée : " + valeurResistance + "Ω\n");
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
