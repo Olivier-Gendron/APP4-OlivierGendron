@@ -30,7 +30,7 @@ public class CircuitApp {
             try {
                 Composant c = circuitBuilder.construireCircuit(chemin);
                 valeurResistance = c.calculerResistance();
-                System.out.println("Résistance équivalente calculée : " + valeurResistance + "Ω");
+                System.out.println("\nRésistance équivalente calculée : " + valeurResistance + "Ω");
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
@@ -56,16 +56,16 @@ public class CircuitApp {
     }
 
     private static void afficherFichiers(String[] fichiersDisponibles) {
-        System.out.println("---Liste des fichiers disponibles---");
+        System.out.println("------Liste des fichiers disponibles------");
         if (fichiersDisponibles == null || fichiersDisponibles.length == 0) {
             System.out.println("Aucun fichier disponible");
         } else {
             for (int i = 0; i < fichiersDisponibles.length; i++) {
-                System.out.println("[" + i + "] " + fichiersDisponibles[i]);
+                System.out.println("\t[" + i + "] " + fichiersDisponibles[i]);
             }
         }
 
-        System.out.println("-----------------------------------");
+        System.out.println("-----------------------------------------");
     }
 
     private static int demanderNumero() {
@@ -99,7 +99,7 @@ public class CircuitApp {
         String reponse = null;
         char repFinale = 0;
         do {
-            System.out.println("[R] Tester un autre fichier\n[Q] Quitter");
+            System.out.println("\t[R] Tester un autre fichier\n\t[Q] Quitter");
             try {
                 System.out.print("Entrez la lettre correspondant à l'option que vous désirez: ");
                 reponse = sc.nextLine();
