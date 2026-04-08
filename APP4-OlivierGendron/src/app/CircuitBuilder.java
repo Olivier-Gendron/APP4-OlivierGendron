@@ -24,7 +24,7 @@ public class CircuitBuilder {
         ObjectMapper mapper = new ObjectMapper();
         try {
             JsonNode donneesCircuit = mapper.readTree(new File(cheminFichier));
-            return lireComposant(donneesCircuit.get("Circuit"));
+            return lireComposant(donneesCircuit.get("circuit"));
 
         } catch (IOException e) {
             System.err.println("Erreur de lecture : " + e.getMessage());
@@ -34,24 +34,29 @@ public class CircuitBuilder {
     }
 
     private Composant lireComposant(JsonNode node) {
-        String type = node.get("type").asText();
-        if ("resistance".equals(type)) {
-            return new Resistance(node.get("valeur").asDouble());
-        } else if ("serie".equals(type)) {
-            List<Composant> composants = new ArrayList<>();
-            for (JsonNode composantNode : node.get("composants")) {
-                composants.add(lireComposant(composantNode));
-            }
-            return new CircuitSerie(composants);
-        } else if ("parallele".equals(type)) {
-            List<Composant> composants = new ArrayList<>();
-            for (JsonNode composantNode : node.get("composants")) {
-                composants.add(lireComposant(composantNode));
-            }
-            return new CircuitParallele(composants);
+           try {
+               String type = node.get("type").asText();
+               if ("resistance".equals(type)) {
+                   return new Resistance(node.get("valeur").asDouble());
+               } else if ("serie".equals(type)) {
+                   List<Composant> composants = new ArrayList<>();
+                   for (JsonNode composantNode : node.get("composants")) {
+                       composants.add(lireComposant(composantNode));
+                   }
+                   return new CircuitSerie(composants);
+               } else if ("parallele".equals(type)) {
+                   List<Composant> composants = new ArrayList<>();
+                   for (JsonNode composantNode : node.get("composants")) {
+                       composants.add(lireComposant(composantNode));
+                   }
+                   return new CircuitParallele(composants);
 
-        }
 
-        throw new IllegalArgumentException("Type de circuit non reconnu.");
+               }
+           } catch (NullPointerException e) {
+               throw new NullPointerException("Le type de circuit est vide.");
+           }
+            throw new IllegalArgumentException("Type de circuit inconnu.");
+
     }
 }

@@ -22,24 +22,22 @@ public class CircuitApp {
     }
 
     public static void main(String[] args) {
+        double valeurResistance;
         do {
             afficherFichiers(creationListeFichiers());
             String chemin = construireChemin(demanderNumero());
             CircuitBuilder circuitBuilder = new CircuitBuilder();
-            Composant c = circuitBuilder.construireCircuit(chemin);
-            if (c == null) {
-                System.out.println("ERREUR: Impossible de construire le circuit à partir du fichier.");
-            } else {
-                double valeurResistance = c.calculerResistance();
+            try {
+                Composant c = circuitBuilder.construireCircuit(chemin);
+                valeurResistance = c.calculerResistance();
                 System.out.println("Résistance équivalente calculée : " + valeurResistance + "Ω");
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
             }
-
-            double valeurResistance = c.calculerResistance();
-            System.out.println("Résistance équivalente calculée : " + valeurResistance + "Ω");
-
 
         } while (boucleUtilisation() == 'R');
         System.out.println("---Le programme a bien été arrêté---");
+
 
     }
 
@@ -54,11 +52,6 @@ public class CircuitApp {
             return null;
         }
         fichiersDisponibles = dossier.list();
-        if (fichiersDisponibles == null) {
-            System.out.println("Le dossier est vide.");
-            return null;
-        }
-
         return fichiersDisponibles;
     }
 
@@ -67,7 +60,7 @@ public class CircuitApp {
         if (fichiersDisponibles == null || fichiersDisponibles.length == 0) {
             System.out.println("Aucun fichier disponible");
         } else {
-            for (int i = 0; i <= fichiersDisponibles.length - 1; i++) {
+            for (int i = 0; i < fichiersDisponibles.length; i++) {
                 System.out.println("[" + i + "] " + fichiersDisponibles[i]);
             }
         }
@@ -76,19 +69,22 @@ public class CircuitApp {
     }
 
     private static int demanderNumero() {
-        Scanner sc = new Scanner(System.in);
         int numeroFichier = -1;
-        System.out.print("Entrez le numéro correspondant au dossier que vous voulez utiliser: ");
-        try {
-            numeroFichier = sc.nextInt();
-        } catch (InputMismatchException e) {
-            System.out.println("ERREUR: Veuillez entrer une valeur numérique valide.");
-            demanderNumero();
-        }
-        if (numeroFichier >= fichiersDisponibles.length || numeroFichier < 0) {
-            System.out.println("ERREUR: Veuillez entrer une valeur entre 0 et " + (fichiersDisponibles.length - 1));
-            return demanderNumero();
-        }
+        do {
+            System.out.print("Entrez le numéro correspondant au dossier que vous voulez utiliser: ");
+            try {
+                Scanner sc = new Scanner(System.in);
+                numeroFichier = sc.nextInt();
+                if (numeroFichier >= fichiersDisponibles.length || numeroFichier < 0) {
+                    System.out.println("ERREUR: Veuillez entrer une valeur entre 0 et " + (fichiersDisponibles.length - 1));
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("ERREUR: Veuillez entrer une valeur numérique valide.");
+                numeroFichier = -1;
+            }
+
+        } while (numeroFichier < 0 || numeroFichier >= fichiersDisponibles.length);
+
         return numeroFichier;
 
 
@@ -100,21 +96,31 @@ public class CircuitApp {
 
     private static char boucleUtilisation() {
         Scanner sc = new Scanner(System.in);
-        char reponse = 0;
-        System.out.println("[R] Tester un autre fichier\n[Q] Quitter");
-        try {
-            System.out.print("Entrez la lettre correspondant à l'option que vous désirez:");
-            reponse = sc.nextLine().charAt(0);
-        } catch (InputMismatchException e) {
-            System.out.println("ERREUR: Veuillez entrer un caractère valide.");
-           return boucleUtilisation();
-        }
-        reponse = Character.toUpperCase(reponse);
-        if (reponse != 'R' && reponse != 'Q') {
-            System.out.println("ERREUR: Veuillez entrer un caractère valide.");
-            return boucleUtilisation();
-        }
-        return reponse;
+        String reponse = null;
+        char repFinale = 0;
+        do {
+            System.out.println("[R] Tester un autre fichier\n[Q] Quitter");
+            try {
+                System.out.print("Entrez la lettre correspondant à l'option que vous désirez: ");
+                reponse = sc.nextLine();
+            } catch (InputMismatchException e) {
+                System.out.println("ERREUR: Veuillez entrer un caractère valide.");
+                reponse = "Erreur";
+            }
+            if (reponse.length() != 1){
+                System.out.println("ERREUR: Veuillez entrer un seul caractère.");
+                repFinale = 'E';
+            } else{
+              repFinale = reponse.charAt(0);
+                repFinale = Character.toUpperCase(repFinale);
+                if (repFinale != 'R' && repFinale != 'Q') {
+                    System.out.println("ERREUR: Veuillez entrer un caractère valide.");
+            }
+
+            }
+        } while (repFinale != 'R' && repFinale != 'Q');
+
+        return repFinale;
 
     }
 }
